@@ -1,12 +1,13 @@
 // contenedor padre de las cards
-let contenedorCard = document.getElementById("contenedor-4-cards");
+//let contenedorCard = document.getElementById("contenedor-4-cards");
+//console.log(contenedorCard)
 // variable donde se va a alojar card|
-let cardsDeEventos= ""
+// let cardsDeEventos= ""
 
-// contenedor de los checkbox
-let contenedorCheckbox = document.getElementById("contenedorCategorias");
-// variable donde se va a alojar cada checkbox
-let checkboxCategoria =""
+// // contenedor de los checkbox
+// let contenedorCheckbox = document.getElementById("contenedorCategorias");
+// // variable donde se va a alojar cada checkbox
+// let checkboxCategoria =""
 
 //contenedor de card
 let contenedorPrincipal = document.querySelector('div.contenedor-4-cards')
@@ -44,60 +45,55 @@ document.querySelector(".contenedorCategorias").innerHTML= htmlCategorias
 
 
 // Aplico Filtro Categoria
-let eventosFiltrados = []
+let categoriasSeleccionadas = []
 let checkbox = document.querySelectorAll('input[type=checkbox]')
 checkbox.forEach(input => {
     input.addEventListener('change', (e)=>{
         contenedorPrincipal.innerHTML = ""
-        if (e.target.checked) {
-            let categoriaSeleccionada = e.target.value;
-            eventosFiltrados = data.events.filter(ev => {
-                if (ev.category == categoriaSeleccionada) {
-                    //console.log(ev.category)
-                    return true;
-                }
-            })
-            console.log(eventosFiltrados)
+        checkbox.forEach(checkeado =>{
+            if (checkeado.checked){
+                categoriasSeleccionadas.push(checkeado.value)
+            }
+        })
+        eventosFiltrados = data.events.filter(ev => categoriasSeleccionadas.includes(ev.category))
             for(let eF of eventosFiltrados){
                 contenedorPrincipal.innerHTML += createCard (eF)
             }
-        }
+        // }
     })
 })
 
-// Filtro por búsqueda sobre el que estoy trabajando
-let busqueda = document.querySelectorAll('input[type=search]')
-// busqueda.forEach(input => {
-    document.addEventListener('submit', (eb)=>{
-            let palabraBusqueda = eb.target.value;
-            console.log(palabraBusqueda)
-            let filtroBusqueda = data.events.filter (eventobusqueda => {
-                eventobusqueda.preventDefault()
-                if(eventobusqueda.name == palabraBusqueda){
-                console.log(eventobusqueda.name)
-                return true;
-                }
-            })
-            for(let eB of palabraBusqueda){
-                crearCardParaEvento (eB)
-            }
-    })
-// })}
-// Filtro por busqueda no del todo bien
+
+// // Filtro por búsqueda 
 // let busqueda = document.querySelectorAll('input[type=search]')
-// busqueda.forEach(input => {
-//     input.addEventListener('change', (eb)=>{
-//             let palabraBusqueda = eb.target.value;
-//             console.log(palabraBusqueda)
-//             let filtroBusqueda = data.events.filter (eventobusqueda => {
-//                 eventobusqueda.preventDefault()
-//                 if(eventobusqueda.category == palabraBusqueda){
-//                 console.log(eventobusqueda.category)
-//                 return true;
-//                 }
-//             })
-//             for(let eB of palabraBusqueda){
-//                 crearCardParaEvento (eB)
-//             }
-//     })
-// })
+    contenedorPrincipal.innerHTML = "";
+    let myArray = data.events;
+    document.addEventListener('submit', (eb)=>{
+        eb.preventDefault()
+        let palabraBusqueda = eb.target[0].value.toLowerCase();
+        let filtroBusqueda = data.events.filter (eventobusqueda => {
+            if(eventobusqueda.name.toLowerCase().includes (palabraBusqueda) || eventobusqueda.description.toLowerCase().includes(palabraBusqueda )){
+            return true;
+            } 
+        })
+        for(let eB of filtroBusqueda){
+            contenedorPrincipal.innerHTML += createCard (eB)
+        }
+    })
+    let selection = []
+    // Funcion para completar con cards cuando no hay filtro
+    function vacio(){
+        if (selection.indexOf() == -1){
+            for (const event of data.events){
+                contenedorPrincipal.innerHTML += createCard(event)
+                
+            }
+        }
+    }
+
+    function crearCard(unArray) {
+        for(let event of unArray){
+            contenedorPrincipal.innerHTML += createCard (event)
+        }
+    }
+    document.onload = crearCard (data.events); 
